@@ -1181,6 +1181,81 @@
     .stats-v2 .wave-2 { width: 920px; height: 280px; left: -86px; bottom: -216px; border: 14px solid rgba(109, 193, 132, 0.42); transform: rotate(-7deg); }
     .stats-v2 .wave-3 { width: 860px; height: 240px; left: -40px; bottom: -208px; border: 18px solid rgba(229, 239, 234, 0.96); transform: rotate(-7deg); }
 
+    /* ===== ABOUT ===== */
+    .about-story .content {
+      text-align: center;
+      padding-top: 22px;
+      padding-bottom: 30px;
+    }
+
+    .about-main-title {
+      color: #1f2430;
+      font-size: clamp(24px, 3.3vw, 36px);
+      line-height: 1.18;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .about-tagline {
+      margin: 10px auto 0;
+      max-width: 860px;
+      color: #596475;
+      font-size: clamp(14px, 1.45vw, 17px);
+      line-height: 1.45;
+      font-weight: 500;
+    }
+
+    .about-block {
+      margin-top: 32px;
+    }
+
+    .about-sub-title {
+      color: #1f2430;
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .about-block p {
+      margin: 12px auto 0;
+      max-width: 980px;
+      color: #5f6978;
+      font-size: clamp(13px, 1.3vw, 16px);
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    .about-reason-grid {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .about-reason-card {
+      background: linear-gradient(180deg, #ffffff 0%, #fbfbfd 100%);
+      border: 1px solid #eceef3;
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: 0 10px 20px rgba(26, 36, 52, 0.04);
+    }
+
+    .about-reason-card h4 {
+      color: #3f9b6f;
+      font-size: clamp(18px, 2vw, 24px);
+      line-height: 1.25;
+      font-weight: 800;
+    }
+
+    .about-reason-card p {
+      margin: 10px auto 0;
+      max-width: 100%;
+      color: #667181;
+      font-size: clamp(12px, 1.15vw, 14px);
+      line-height: 1.45;
+      font-weight: 500;
+    }
+
     /* ===== CATEGORIES ===== */
     .categories-grid {
       display: grid;
@@ -1542,6 +1617,13 @@
       .why-grid { position: relative; top: auto; right: auto; width: 100%; margin-top: 20px; padding: 0 16px 20px; }
       .why-card { min-height: auto; padding: 20px; }
       .check { min-width: 42px; width: 42px; height: 42px; font-size: 22px; }
+      .about-reason-grid { grid-template-columns: 1fr; }
+      .about-main-title { font-size: clamp(22px, 5vw, 30px); }
+      .about-tagline { font-size: clamp(14px, 2.4vw, 16px); }
+      .about-sub-title { font-size: clamp(18px, 4.2vw, 24px); }
+      .about-block p { font-size: clamp(13px, 2.2vw, 15px); }
+      .about-reason-card h4 { font-size: clamp(17px, 3.2vw, 21px); }
+      .about-reason-card p { font-size: clamp(12px, 1.9vw, 14px); }
       .categories-grid { grid-template-columns: repeat(2, 1fr); }
       .insights-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .footer-v2 .content { padding: 0 22px 22px; }
@@ -1568,6 +1650,12 @@
       .why-grid { padding: 0 0 20px; }
       .why-card { padding: 16px; gap: 12px; }
       .check { min-width: 36px; width: 36px; height: 36px; font-size: 18px; }
+      .about-story .content { padding-top: 20px; padding-bottom: 24px; }
+      .about-block { margin-top: 24px; }
+      .about-block p { margin-top: 14px; }
+      .about-reason-grid { gap: 14px; margin-top: 20px; }
+      .about-reason-card { border-radius: 12px; padding: 16px 14px; }
+      .about-reason-card p { margin-top: 12px; }
       .center-wrap { padding: 18px 14px 24px; }
       .works-v2-grid { grid-template-columns: 1fr; }
       .works-v2-track { display: none; }
@@ -1806,6 +1894,38 @@
               <div class="store-logo" aria-hidden="true">&#9654;</div>
               <div class="store-copy"><small>GET IT ON</small><strong>Google Play</strong></div>
             </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== ABOUT ===== -->
+      <section class="panel about-story light" aria-labelledby="about-main-heading">
+        <div class="content">
+          <h2 id="about-main-heading" class="about-main-title">About Us</h2>
+          <p class="about-tagline">Creating a fair, transparent, and simple marketplace where local communities thrive.</p>
+
+          <div class="about-block">
+            <h3 class="about-sub-title">Our Mission</h3>
+            <p>At Mobitrons, our mission is to restore fairness and freedom in local commerce. We believe every customer should have the power to choose who they work with, and every service provider or seller should have the right to quote their own fair price - without interference from a platform that dictates terms.</p>
+          </div>
+
+          <div class="about-block" aria-labelledby="why-started-heading">
+            <h3 id="why-started-heading" class="about-sub-title">Why We Started</h3>
+            <div class="about-reason-grid" role="list" aria-label="Why Mobitrons started">
+              <article class="about-reason-card" role="listitem">
+                <h4>The Problem We Saw</h4>
+                <p>Existing platforms often decide the price customers pay and dictate which service provider they are matched with. This removes choice, limits transparency, and prevents providers from offering their true value.</p>
+              </article>
+              <article class="about-reason-card" role="listitem">
+                <h4>The Unheard Voices</h4>
+                <p>Small sellers like housewives, single moms, and local artisans - people who make valuable products from home - are often left out. For them, joining large platforms is complex, expensive, and discouraging. We wanted to change that.</p>
+              </article>
+            </div>
+          </div>
+
+          <div class="about-block">
+            <h3 class="about-sub-title">Our Solution</h3>
+            <p>Mobitrons is built to give power back to people. Customers can choose providers and sellers they trust. Service providers set their own fair prices. Small and home-based sellers find a welcoming, simple way to reach their community.</p>
           </div>
         </div>
       </section>
