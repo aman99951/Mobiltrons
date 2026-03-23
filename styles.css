@@ -1805,7 +1805,11 @@
     }
 
     .reviews-v2-controls {
-      margin-top: 18px;
+      position: absolute;
+      left: 50%;
+      bottom: 12px;
+      transform: translateX(-50%);
+      z-index: 4;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1815,10 +1819,10 @@
     .reviews-nav-btn {
       width: 36px;
       height: 36px;
-      border: 1px solid rgba(255,255,255,.45);
+      border: 1px solid rgba(22, 48, 78, .35);
       border-radius: 50%;
-      background: rgba(255,255,255,.16);
-      color: #fff;
+      background: rgba(255,255,255,.92);
+      color: #17304c;
       font-size: 18px;
       font-weight: 700;
       line-height: 1;
@@ -1828,8 +1832,8 @@
 
     .reviews-nav-btn:hover,
     .reviews-nav-btn:focus-visible {
-      background: rgba(255,255,255,.28);
-      border-color: rgba(255,255,255,.7);
+      background: #fff;
+      border-color: rgba(22, 48, 78, .55);
       outline: none;
     }
 

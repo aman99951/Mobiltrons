@@ -98,6 +98,8 @@
     (function () {
       var carousel = document.querySelector('.reviews-v2-carousel');
       var track = carousel ? carousel.querySelector('.reviews-v2-track') : null;
+      var prevBtn = document.querySelector('.reviews-prev');
+      var nextBtn = document.querySelector('.reviews-next');
       if (!carousel || !track) return;
 
       var testimonials = [
@@ -152,7 +154,8 @@
       }
 
       function pauseWhenPlaying() {
-        var activeVideo = track.children[index] ? track.children[index].querySelector('video') : null;
+        var activeSlide = track.children[index];
+        var activeVideo = activeSlide ? activeSlide.querySelector('video') : null;
         return !!(activeVideo && !activeVideo.paused && !activeVideo.ended);
       }
 
@@ -180,7 +183,8 @@
       function startAuto() {
         stopAuto();
         autoTimer = setInterval(function () {
-          if (!pauseWhenPlaying()) next();
+          if (pauseWhenPlaying()) return;
+          next();
         }, 4200);
       }
 
@@ -189,8 +193,6 @@
         autoTimer = null;
       }
 
-      carousel.addEventListener('mouseenter', stopAuto);
-      carousel.addEventListener('mouseleave', startAuto);
       carousel.addEventListener('wheel', function (e) {
         e.preventDefault();
         stopAuto();
@@ -198,6 +200,22 @@
         else prev();
         startAuto();
       }, { passive: false });
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', function () {
+          stopAuto();
+          prev();
+          startAuto();
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', function () {
+          stopAuto();
+          next();
+          startAuto();
+        });
+      }
 
       carousel.addEventListener('mousedown', function (e) {
         dragging = true;
