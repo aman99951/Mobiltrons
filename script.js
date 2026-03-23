@@ -351,15 +351,13 @@
       });
     })();
 
-    // Hero video: autoplay (muted) without controls, then unmute on first user interaction
+    // Hero video autoplay + custom pause/stop controls
     (function () {
       var heroVideo = document.querySelector('.hero-visual-video');
       if (!heroVideo) return;
-      var playBtn = document.querySelector('.hero-video-play');
-      var muteBtn = document.querySelector('.hero-video-mute');
 
       heroVideo.loop = true;
-      heroVideo.controls = false;
+      heroVideo.controls = true;
       heroVideo.muted = false;
       heroVideo.volume = 1;
       heroVideo.playsInline = true;
@@ -383,46 +381,9 @@
         document.removeEventListener('pointerdown', unlockAudio, true);
         document.removeEventListener('touchstart', unlockAudio, true);
         document.removeEventListener('keydown', unlockAudio, true);
-        syncButtons();
       }
       document.addEventListener('click', unlockAudio, { once: true, capture: true });
       document.addEventListener('pointerdown', unlockAudio, { once: true, capture: true });
       document.addEventListener('touchstart', unlockAudio, { once: true, capture: true, passive: true });
       document.addEventListener('keydown', unlockAudio, { once: true, capture: true });
-
-      function syncButtons() {
-        if (playBtn) {
-          var paused = heroVideo.paused || heroVideo.ended;
-          playBtn.innerHTML = paused ? '<span>▶</span>' : '<span>❚❚</span>';
-          playBtn.setAttribute('aria-label', paused ? 'Play video' : 'Pause video');
-        }
-        if (muteBtn) {
-          var muted = heroVideo.muted;
-          muteBtn.innerHTML = muted ? '<span>🔇</span>' : '<span>🔊</span>';
-          muteBtn.setAttribute('aria-label', muted ? 'Unmute video' : 'Mute video');
-        }
-      }
-
-      if (playBtn) {
-        playBtn.addEventListener('click', function () {
-          if (heroVideo.paused || heroVideo.ended) {
-            heroVideo.play().catch(function () {});
-          } else {
-            heroVideo.pause();
-          }
-          syncButtons();
-        });
-      }
-
-      if (muteBtn) {
-        muteBtn.addEventListener('click', function () {
-          heroVideo.muted = !heroVideo.muted;
-          syncButtons();
-        });
-      }
-
-      heroVideo.addEventListener('play', syncButtons);
-      heroVideo.addEventListener('pause', syncButtons);
-      heroVideo.addEventListener('volumechange', syncButtons);
-      syncButtons();
     })();
