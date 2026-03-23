@@ -94,20 +94,11 @@
         item.addEventListener('mouseleave', reset);
       });
     })();
-
-    // Testimonial carousel with ARIA
+    // Testimonial carousel with left video + right comment (infinite loop)
     (function () {
       var carousel = document.querySelector('.reviews-v2-carousel');
-      if (!carousel) return;
-
-      var video = carousel.querySelector('.testimonial-video');
-      var tag = carousel.querySelector('.testimonial-tag');
-      var text = carousel.querySelector('.testimonial-text');
-      var cite = carousel.querySelector('.testimonial-footer cite');
-      var dots = document.querySelectorAll('.reviews-v2-dots button');
-      var prevBtn = document.querySelector('.reviews-nav-btn.prev');
-      var nextBtn = document.querySelector('.reviews-nav-btn.next');
-      if (!video || !tag || !text || !cite || !dots.length || !prevBtn || !nextBtn) return;
+      var track = carousel ? carousel.querySelector('.reviews-v2-track') : null;
+      if (!carousel || !track) return;
 
       var testimonials = [
         {
@@ -125,58 +116,74 @@
         {
           person: 'Local Customer',
           title: 'Fresh homemade products nearby.',
-          body: 'I was looking for fresh, homemade dosa dough. I found a lady selling it just a few streets away on Mobitrons. I called through the app to confirm, and the flour was very fresh.',
+          body: "I was looking for fresh, homemade dosa dough. I found a lady selling it just a few streets away on Mobitrons. I was able to call her through the app to confirm, and the flour was so fresh. It's great to support local people.",
           video: './assets/Food_Customer_2 1.mp4'
         }
       ];
 
-      var activeIndex = 0;
-
-      function paintDots() {
-        dots.forEach(function (dot, idx) {
-          var isActive = idx === activeIndex;
-          dot.classList.toggle('active', isActive);
-          dot.setAttribute('aria-selected', isActive);
-        });
+      function slideHtml(item) {
+        return '<div class="review-slide">'
+          + '<article class="testimonial-media lp-story-card" aria-label="Video testimonial">'
+          + '<video class="testimonial-video" width="480" height="260" controls preload="metadata" playsinline>'
+          + '<source src="' + item.video + '" type="video/mp4" />'
+          + '</video>'
+          + '<div class="testimonial-tag">' + item.person + '</div>'
+          + '</article>'
+          + '<article class="testimonial-quote lp-story-card" aria-label="Written testimonial">'
+          + '<div class="testimonial-mark" aria-hidden="true">"</div>'
+          + '<blockquote><p class="testimonial-text"><strong>' + item.title + '</strong><br>' + item.body + '</p></blockquote>'
+          + '<div class="testimonial-footer"><span class="testimonial-stars" aria-label="5 out of 5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="testimonial-sep" aria-hidden="true">|</span><cite>' + item.person + '</cite></div>'
+          + '</article>'
+          + '</div>';
       }
 
-      function render(index) {
-        var item = testimonials[index];
-        carousel.classList.add('is-changing');
-        setTimeout(function () {
-          video.pause();
-          video.removeAttribute('poster');
-          video.src = item.video;
-          video.load();
-          tag.textContent = item.person;
-          cite.textContent = item.person;
-          text.innerHTML = '<strong>' + item.title + '</strong><br>' + item.body;
-          paintDots();
-          carousel.classList.remove('is-changing');
-        }, 170);
-      }
+      var slides = [testimonials[testimonials.length - 1]].concat(testimonials, [testimonials[0]]);
+      track.innerHTML = slides.map(slideHtml).join('');
 
-      function prev() {
-        activeIndex = (activeIndex - 1 + testimonials.length) % testimonials.length;
-        render(activeIndex);
-      }
-
-      function next() {
-        activeIndex = (activeIndex + 1) % testimonials.length;
-        render(activeIndex);
-      }
-
-      dots.forEach(function (dot, idx) {
-        dot.addEventListener('click', function () { activeIndex = idx; render(activeIndex); });
-      });
-      prevBtn.addEventListener('click', prev);
-      nextBtn.addEventListener('click', next);
-
+      var index = 1;
+      var locked = false;
       var autoTimer = null;
+      var dragStartX = 0;
+      var dragging = false;
+
+      function setPos(animate) {
+        track.style.transition = animate ? 'transform 1400ms cubic-bezier(.22,1,.36,1)' : 'none';
+        track.style.transform = 'translateX(' + (-index * 100) + '%)';
+      }
+
+      function pauseWhenPlaying() {
+        var activeVideo = track.children[index] ? track.children[index].querySelector('video') : null;
+        return !!(activeVideo && !activeVideo.paused && !activeVideo.ended);
+      }
+
+      function move(dir) {
+        if (locked) return;
+        locked = true;
+        index += dir;
+        setPos(true);
+      }
+
+      function next() { move(1); }
+      function prev() { move(-1); }
+
+      track.addEventListener('transitionend', function () {
+        if (index === slides.length - 1) {
+          index = 1;
+          setPos(false);
+        } else if (index === 0) {
+          index = testimonials.length;
+          setPos(false);
+        }
+        locked = false;
+      });
+
       function startAuto() {
         stopAuto();
-        autoTimer = setInterval(next, 4500);
+        autoTimer = setInterval(function () {
+          if (!pauseWhenPlaying()) next();
+        }, 4200);
       }
+
       function stopAuto() {
         if (autoTimer) clearInterval(autoTimer);
         autoTimer = null;
@@ -184,11 +191,35 @@
 
       carousel.addEventListener('mouseenter', stopAuto);
       carousel.addEventListener('mouseleave', startAuto);
-      prevBtn.addEventListener('click', startAuto);
-      nextBtn.addEventListener('click', startAuto);
-      dots.forEach(function (dot) { dot.addEventListener('click', startAuto); });
+      carousel.addEventListener('wheel', function (e) {
+        e.preventDefault();
+        stopAuto();
+        if (e.deltaY > 0 || e.deltaX > 0) next();
+        else prev();
+        startAuto();
+      }, { passive: false });
 
-      render(activeIndex);
+      carousel.addEventListener('mousedown', function (e) {
+        dragging = true;
+        dragStartX = e.clientX;
+        carousel.classList.add('dragging');
+        stopAuto();
+      });
+
+      window.addEventListener('mouseup', function (e) {
+        if (!dragging) return;
+        dragging = false;
+        carousel.classList.remove('dragging');
+        var dx = e.clientX - dragStartX;
+        if (Math.abs(dx) > 30) {
+          if (dx < 0) next();
+          else prev();
+        }
+        startAuto();
+      });
+
+      setPos(false);
+      track.querySelectorAll('video').forEach(function (v) { v.preload = 'auto'; });
       startAuto();
     })();
 
@@ -318,4 +349,80 @@
           logo.classList.remove('logo-click-anim');
         }, 700);
       });
+    })();
+
+    // Hero video: autoplay (muted) without controls, then unmute on first user interaction
+    (function () {
+      var heroVideo = document.querySelector('.hero-visual-video');
+      if (!heroVideo) return;
+      var playBtn = document.querySelector('.hero-video-play');
+      var muteBtn = document.querySelector('.hero-video-mute');
+
+      heroVideo.loop = true;
+      heroVideo.controls = false;
+      heroVideo.muted = false;
+      heroVideo.volume = 1;
+      heroVideo.playsInline = true;
+
+      var tryPlay = heroVideo.play();
+      if (tryPlay && typeof tryPlay.catch === 'function') {
+        tryPlay.catch(function () {
+          // Browser may block autoplay with sound; keep video running muted and unmute on first interaction.
+          heroVideo.muted = true;
+          heroVideo.play().catch(function () {});
+        });
+      }
+
+      var unlocked = false;
+      function unlockAudio() {
+        if (unlocked) return;
+        unlocked = true;
+        heroVideo.muted = false;
+        heroVideo.play().catch(function () {});
+        document.removeEventListener('click', unlockAudio, true);
+        document.removeEventListener('pointerdown', unlockAudio, true);
+        document.removeEventListener('touchstart', unlockAudio, true);
+        document.removeEventListener('keydown', unlockAudio, true);
+        syncButtons();
+      }
+      document.addEventListener('click', unlockAudio, { once: true, capture: true });
+      document.addEventListener('pointerdown', unlockAudio, { once: true, capture: true });
+      document.addEventListener('touchstart', unlockAudio, { once: true, capture: true, passive: true });
+      document.addEventListener('keydown', unlockAudio, { once: true, capture: true });
+
+      function syncButtons() {
+        if (playBtn) {
+          var paused = heroVideo.paused || heroVideo.ended;
+          playBtn.innerHTML = paused ? '<span>▶</span>' : '<span>❚❚</span>';
+          playBtn.setAttribute('aria-label', paused ? 'Play video' : 'Pause video');
+        }
+        if (muteBtn) {
+          var muted = heroVideo.muted;
+          muteBtn.innerHTML = muted ? '<span>🔇</span>' : '<span>🔊</span>';
+          muteBtn.setAttribute('aria-label', muted ? 'Unmute video' : 'Mute video');
+        }
+      }
+
+      if (playBtn) {
+        playBtn.addEventListener('click', function () {
+          if (heroVideo.paused || heroVideo.ended) {
+            heroVideo.play().catch(function () {});
+          } else {
+            heroVideo.pause();
+          }
+          syncButtons();
+        });
+      }
+
+      if (muteBtn) {
+        muteBtn.addEventListener('click', function () {
+          heroVideo.muted = !heroVideo.muted;
+          syncButtons();
+        });
+      }
+
+      heroVideo.addEventListener('play', syncButtons);
+      heroVideo.addEventListener('pause', syncButtons);
+      heroVideo.addEventListener('volumechange', syncButtons);
+      syncButtons();
     })();
