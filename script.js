@@ -126,8 +126,8 @@
       function slideHtml(item) {
         return '<div class="review-slide">'
           + '<article class="testimonial-media lp-story-card" aria-label="Video testimonial">'
-          + '<video class="testimonial-video" width="480" height="260" controls preload="metadata" playsinline>'
-          + '<source src="' + item.video + '" type="video/mp4" />'
+          + '<video class="testimonial-video" width="480" height="260" controls preload="none" playsinline>'
+          + '<source data-src="' + item.video + '" type="video/mp4" />'
           + '</video>'
           + '<div class="testimonial-tag">' + item.person + '</div>'
           + '</article>'
@@ -151,6 +151,28 @@
       function setPos(animate) {
         track.style.transition = animate ? 'transform 1400ms cubic-bezier(.22,1,.36,1)' : 'none';
         track.style.transform = 'translateX(' + (-index * 100) + '%)';
+      }
+
+      // Lazy-load only current/neighbor videos to reduce initial payload on deployed site.
+      function hydrateSlideVideo(slideEl) {
+        if (!slideEl) return;
+        var video = slideEl.querySelector('video');
+        if (!video) return;
+        var source = video.querySelector('source');
+        if (!source) return;
+        if (!source.getAttribute('src')) {
+          var lazySrc = source.getAttribute('data-src');
+          if (lazySrc) {
+            source.setAttribute('src', lazySrc);
+            video.load();
+          }
+        }
+      }
+
+      function preloadNearbySlides() {
+        hydrateSlideVideo(track.children[index]);
+        hydrateSlideVideo(track.children[index + 1]);
+        hydrateSlideVideo(track.children[index - 1]);
       }
 
       function pauseWhenPlaying() {
@@ -177,6 +199,7 @@
           index = testimonials.length;
           setPos(false);
         }
+        preloadNearbySlides();
         locked = false;
       });
 
@@ -237,7 +260,7 @@
       });
 
       setPos(false);
-      track.querySelectorAll('video').forEach(function (v) { v.preload = 'auto'; });
+      preloadNearbySlides();
       startAuto();
     })();
 
@@ -369,7 +392,7 @@
       });
     })();
 
-    // Hero video autoplay + custom pause/stop controls
+    // Hero video should stay paused on first load
     (function () {
       var heroVideo = document.querySelector('.hero-visual-video');
       if (!heroVideo) return;
@@ -379,29 +402,6 @@
       heroVideo.muted = false;
       heroVideo.volume = 1;
       heroVideo.playsInline = true;
-
-      var tryPlay = heroVideo.play();
-      if (tryPlay && typeof tryPlay.catch === 'function') {
-        tryPlay.catch(function () {
-          // Browser may block autoplay with sound; keep video running muted and unmute on first interaction.
-          heroVideo.muted = true;
-          heroVideo.play().catch(function () {});
-        });
-      }
-
-      var unlocked = false;
-      function unlockAudio() {
-        if (unlocked) return;
-        unlocked = true;
-        heroVideo.muted = false;
-        heroVideo.play().catch(function () {});
-        document.removeEventListener('click', unlockAudio, true);
-        document.removeEventListener('pointerdown', unlockAudio, true);
-        document.removeEventListener('touchstart', unlockAudio, true);
-        document.removeEventListener('keydown', unlockAudio, true);
-      }
-      document.addEventListener('click', unlockAudio, { once: true, capture: true });
-      document.addEventListener('pointerdown', unlockAudio, { once: true, capture: true });
-      document.addEventListener('touchstart', unlockAudio, { once: true, capture: true, passive: true });
-      document.addEventListener('keydown', unlockAudio, { once: true, capture: true });
+      heroVideo.pause();
+      heroVideo.currentTime = 0;
     })();
