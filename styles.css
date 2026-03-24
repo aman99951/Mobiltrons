@@ -259,11 +259,10 @@
     /* ===== PAGE CONTAINER ===== */
     .page {
       width: calc(100% - 30px);
-     
-      margin: 28px auto;
+      margin: 16px auto;
       display: grid;
       grid-template-columns: 1fr;
-      gap: 18px;
+      gap: 12px;
     }
 
     /* ===== PANELS ===== */
@@ -300,7 +299,7 @@
     .content {
       position: relative;
       z-index: 2;
-      padding: 34px 44px;
+      padding: 22px 24px;
     }
 
     /* ===== UTILITY ===== */
@@ -650,9 +649,9 @@
         "visual cards";
       align-items: center;
       align-content: start;
-      row-gap: clamp(26px, 2.4vw, 38px);
+      row-gap: clamp(16px, 1.8vw, 24px);
       column-gap: clamp(24px, 2.6vw, 42px);
-      padding: 44px clamp(28px, 3vw, 58px) 48px;
+      padding: 28px clamp(18px, 2.2vw, 34px) 30px;
       background:
         radial-gradient(520px 280px at 18% 78%, rgba(165, 226, 185, .34), transparent 64%),
         radial-gradient(620px 280px at 88% 90%, rgba(190, 236, 206, .30), transparent 68%),
@@ -798,7 +797,7 @@
     .works.works-v2 .wave-2 { width: 1160px; height: 420px; left: -176px; bottom: -290px; border: 18px solid rgba(95, 186, 123, .44); transform: rotate(-7deg); }
     .works.works-v2 .wave-3 { width: 1100px; height: 390px; left: -142px; bottom: -286px; border: 34px solid rgba(10, 47, 74, .78); transform: rotate(-7deg); }
 
-    .center-wrap { position: relative; z-index: 3; padding: 22px 14px 20px; }
+    .center-wrap { position: relative; z-index: 3; padding: 12px 10px 12px; }
     .works-v2-head { text-align: center; }
 
     .works-v2-title {
@@ -949,7 +948,7 @@
         linear-gradient(180deg, #f8fafc 0%, #f2f5f9 100%);
     }
 
-    .stats-v2 .content { padding: 28px 26px 26px; }
+    .stats-v2 .content { padding: 20px 20px 18px; }
     .stats-v2 .experience-block { text-align: center; margin-bottom: 28px; }
 
     .stats-v2 .experience-title {
@@ -1072,7 +1071,7 @@
 
     /* ===== ABOUT ===== */
     .about-story .content {
-      padding: clamp(24px, 2.2vw, 34px);
+      padding: clamp(16px, 1.8vw, 24px);
       width: min(70%, 1400px);
       margin: 0 auto;
     }
@@ -1083,26 +1082,15 @@
     }
 
     .about-hero-panel {
-      position: relative;
-      overflow: hidden;
       text-align: center;
-      border-radius: 22px;
-      padding: clamp(22px, 4vw, 34px);
-      background:
-        radial-gradient(circle at 12% 10%, rgba(82, 191, 123, .18), transparent 36%),
-        radial-gradient(circle at 90% 84%, rgba(17, 64, 117, .12), transparent 40%),
-        linear-gradient(140deg, #ffffff 0%, #f7fbff 52%, #eef7f0 100%);
-      border: 1px solid rgba(122, 180, 145, 0.24);
-      box-shadow: 0 20px 40px rgba(19, 44, 69, 0.08);
+      padding: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
     }
 
     .about-hero-panel::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      border: 1px solid rgba(79, 154, 107, .2);
-      pointer-events: none;
+      content: none;
     }
 
     .about-chip {
@@ -1120,20 +1108,21 @@
     }
 
     .about-main-title {
-      margin-top: 14px;
+      margin-top: 0;
       color: #132132;
-      font-size: clamp(28px, 4vw, 46px);
-      line-height: 1.08;
+      font-size: clamp(22px, 3vw, 40px);
+      line-height: 1.14;
       font-weight: 800;
       letter-spacing: -0.03em;
+      text-transform: uppercase;
     }
 
     .about-tagline {
-      margin: 14px auto 0;
+      margin: 8px auto 0;
       max-width: 920px;
       color: #516172;
-      font-size: clamp(15px, 1.45vw, 18px);
-      line-height: 1.55;
+      font-size: clamp(14px, 1.2vw, 16px);
+      line-height: 1.45;
       font-weight: 500;
     }
 
@@ -1293,8 +1282,8 @@
     }
 
     .categories .content {
-      padding-top: 24px;
-      padding-bottom: 28px;
+      padding-top: 16px;
+      padding-bottom: 18px;
     }
 
     .categories-grid {
@@ -1358,8 +1347,8 @@
     }
 
     .faq .content {
-      padding-top: 26px;
-      padding-bottom: 30px;
+      padding-top: 18px;
+      padding-bottom: 20px;
     }
 
     .faq-grid {
@@ -1476,7 +1465,7 @@
 
     /* ===== REVIEWS V2 ===== */
     .reviews.reviews-v2 {
-      min-height: clamp(640px, 52vw, 980px);
+      min-height: auto;
       background: #f7f9fc;
       color: #fff;
       position: relative;
@@ -1488,7 +1477,11 @@
 
     .reviews.reviews-v2::after { content: none; }
 
-    .reviews-v2-inner { position: relative; z-index: 2; padding: 28px 34px 22px; }
+    .reviews-v2-inner {
+      position: relative;
+      z-index: 2;
+      padding: clamp(18px, 2.2vw, 30px) clamp(12px, 1.6vw, 22px) 10px;
+    }
     .reviews-v2-top { text-align: center; color: #2b3140; padding-bottom: 12px; }
 
     .reviews-v2-top h2 {
@@ -1536,13 +1529,13 @@
     .start-collage-image { width: 100%; height: 100%; object-fit: cover; }
 
     .reviews-v2-bottom {
-      margin: 28px auto 0;
+      margin: 0 auto;
       width: 100%;
       max-width: none;
       text-align: center;
       color: #f2f6fd;
       position: relative;
-      padding: 18px 8px 24px;
+      padding: 0 6px 10px;
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
@@ -1573,7 +1566,7 @@
     }
 
     .reviews-v2-bottom h2 {
-      margin: 6px 0 0;
+      margin: 0;
       font-size: clamp(20px, 3vw, 38px);
       font-weight: 800;
       text-transform: uppercase;
@@ -1613,7 +1606,7 @@
     }
 
     .reviews-v2-stage {
-      margin-top: 24px;
+      margin-top: 12px;
       width: 100%;
       min-height: clamp(330px, 30vw, 520px);
       border-radius: 18px;
@@ -1625,7 +1618,7 @@
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding: clamp(20px, 2vw, 34px) clamp(10px, 1.4vw, 20px) clamp(24px, 2.4vw, 40px);
+      padding: clamp(14px, 1.6vw, 24px) clamp(8px, 1vw, 14px) clamp(14px, 1.8vw, 22px);
       box-sizing: border-box;
     }
 
@@ -1715,6 +1708,13 @@
       object-fit: cover;
       object-position: 20% 24%;
       transition: opacity .62s ease;
+      background: #0f1824;
+    }
+
+    /* Portrait testimonial videos: keep full subject visible and centered */
+    .testimonial-video.portrait-focus {
+      object-fit: contain;
+      object-position: center center;
       background: #0f1824;
     }
 
@@ -1926,7 +1926,7 @@
         linear-gradient(180deg, #f4f8fb 0%, #eef4fa 100%);
     }
 
-    .insights .content { padding-top: 22px; padding-bottom: 30px; }
+    .insights .content { padding-top: 16px; padding-bottom: 20px; }
     .insights-head { text-align: center; max-width: 760px; margin: 0 auto; }
 
     .insights-head h2 { margin: 0; color: #232a36; font-size: clamp(22px, 3.2vw, 40px); font-weight: 800; text-transform: uppercase; }
@@ -2269,35 +2269,35 @@
     /* Large/very large screens: make reviews video + comment cards bigger and equal */
     @media (min-width: 1600px) {
       .reviews-v2-bottom { width: min(100%, 1180px); }
-      .reviews-v2-stage { min-height: clamp(360px, 28vw, 560px); }
+      .reviews-v2-stage { min-height: clamp(300px, 22vw, 440px); padding: 12px 10px 16px; }
       .reviews-v2-carousel { width: 100%; }
       .review-slide { grid-template-columns: 1fr 1fr; gap: 20px; }
       .testimonial-media,
-      .testimonial-quote { height: 320px; min-height: 320px; }
+      .testimonial-quote { height: 280px; min-height: 280px; }
     }
 
     @media (min-width: 2000px) {
       .reviews-v2-bottom { width: min(100%, 1360px); }
-      .reviews-v2-stage { min-height: clamp(400px, 27vw, 620px); }
+      .reviews-v2-stage { min-height: clamp(320px, 20vw, 460px); padding: 14px 10px 18px; }
       .reviews-v2-carousel { width: 100%; }
       .testimonial-media,
-      .testimonial-quote { height: 360px; min-height: 360px; }
+      .testimonial-quote { height: 300px; min-height: 300px; }
     }
 
     @media (min-width: 2560px) {
       .reviews-v2-bottom { width: min(100%, 1520px); }
-      .reviews-v2-stage { min-height: clamp(440px, 26vw, 680px); }
+      .reviews-v2-stage { min-height: clamp(340px, 18vw, 500px); padding: 14px 12px 18px; }
       .reviews-v2-carousel { width: 100%; }
       .review-slide { gap: 24px; }
       .testimonial-media,
-      .testimonial-quote { height: 400px; min-height: 400px; }
+      .testimonial-quote { height: 320px; min-height: 320px; }
     }
 
     @media (min-width: 3000px) {
       .reviews-v2-bottom { width: min(100%, 1700px); }
       .reviews-v2-carousel { width: 100%; }
       .testimonial-media,
-      .testimonial-quote { height: 430px; min-height: 430px; }
+      .testimonial-quote { height: 340px; min-height: 340px; }
     }
   
 

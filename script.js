@@ -113,20 +113,22 @@
           person: 'Lakshmi | Customer',
           title: 'Secure and trustworthy experience.',
           body: 'I was skeptical at first, but the verification process and secure connection gave me confidence. I found a great local seller for my product needs, and the whole process was seamless.',
-          video: './assets/Soap_Customer(Lakshmi) 1.mp4'
+          video: './assets/Soap_Customer(Lakshmi) 1.mp4',
+          videoClass: 'portrait-focus'
         },
         {
           person: 'Local Customer',
           title: 'Fresh homemade products nearby.',
           body: "I was looking for fresh, homemade dosa dough. I found a lady selling it just a few streets away on Mobitrons. I was able to call her through the app to confirm, and the flour was so fresh. It's great to support local people.",
-          video: './assets/Food_Customer_2 1.mp4'
+          video: './assets/Food_Customer_2 1.mp4',
+          videoClass: 'portrait-focus'
         }
       ];
 
       function slideHtml(item) {
         return '<div class="review-slide">'
           + '<article class="testimonial-media lp-story-card" aria-label="Video testimonial">'
-          + '<video class="testimonial-video" width="480" height="260" controls preload="none" playsinline>'
+          + '<video class="testimonial-video' + (item.videoClass ? ' ' + item.videoClass : '') + '" width="480" height="260" controls preload="none" playsinline>'
           + '<source data-src="' + item.video + '" type="video/mp4" />'
           + '</video>'
           + '<button type="button" class="testimonial-play-btn" aria-label="Play testimonial video">&#9658;</button>'
@@ -422,6 +424,7 @@
     // Hero video should stay paused on first load
     (function () {
       var heroVideo = document.querySelector('.hero-visual-video');
+      var heroSection = document.getElementById('hero');
       if (!heroVideo) return;
 
       heroVideo.loop = true;
@@ -431,4 +434,16 @@
       heroVideo.playsInline = true;
       heroVideo.pause();
       heroVideo.currentTime = 0;
+
+      // Auto-pause hero video when user scrolls past the hero section.
+      if (heroSection && 'IntersectionObserver' in window) {
+        var heroObserver = new IntersectionObserver(function (entries) {
+          var entry = entries[0];
+          if (!entry) return;
+          if (entry.intersectionRatio < 0.35 && !heroVideo.paused && !heroVideo.ended) {
+            heroVideo.pause();
+          }
+        }, { threshold: [0, 0.35, 1] });
+        heroObserver.observe(heroSection);
+      }
     })();
