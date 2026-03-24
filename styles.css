@@ -131,8 +131,10 @@
 
     .sticky-topbar .brand {
       display: inline-flex;
+      flex-direction: column;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
+      gap: 2px;
       color: #111;
       font-size: 22px;
       font-weight: 700;
@@ -141,29 +143,40 @@
     }
 
     .sticky-topbar .brand img {
-      width: clamp(230px, 22vw, 360px);
+      width: clamp(170px, 16vw, 280px);
       height: auto;
-      max-height: clamp(86px, 9vw, 140px);
+      max-height: clamp(46px, 4.8vw, 74px);
       object-fit: contain;
-     animation: logo-float 5s ease-in-out infinite alternate;
-      transition: transform .6s ease, filter .3s ease;
+      animation: none;
+      transition: transform .25s ease, filter .25s ease;
       will-change: transform;
       pointer-events: auto;
     }
 
     .sticky-topbar .brand img:hover {
-      animation: logo-hover-spin 0.85s ease-out;
-      transform: translateY(-6px) scale(1.08);
+      animation: none;
+      transform: scale(1.08);
     }
 
     .sticky-topbar .brand img.logo-click-anim {
-      animation: logo-click 0.65s ease, logo-float 5s ease-in-out infinite alternate 0.65s;
+      animation: none;
+    }
+
+    .sticky-topbar .brand-tagline {
+      display: block;
+      font-size: clamp(10px, 0.8vw, 12px);
+      line-height: 1.2;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: #223043;
+      white-space: nowrap;
+      text-align: center;
     }
 
     @media (prefers-reduced-motion: reduce) {
       .sticky-topbar .brand img { animation: none; }
       .sticky-topbar .brand img.logo-click-anim { animation: none; }
-      .sticky-topbar .brand img:hover { animation: none; transform: translateY(-4px) scale(1.04); }
+      .sticky-topbar .brand img:hover { animation: none; transform: scale(1.03); }
     }
 
     .sticky-topbar .links {
@@ -450,13 +463,25 @@
       font-weight: 600;
     }
 
+    .hero-benefits-row {
+      margin-top: 16px;
+      width: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: clamp(18px, 2.2vw, 40px);
+      flex-wrap: nowrap;
+    }
+
     .hero .usp-list {
-      margin: 16px 0 0;
+      margin: 0;
       padding: 0;
       list-style: none;
       display: grid;
       gap: 7px;
-      max-width: 430px;
+      max-width: none;
+      flex: 1 1 auto;
+      min-width: 0;
     }
 
     .hero .usp-list li {
@@ -491,13 +516,14 @@
     }
 
     .hero .store-row {
-      margin-top: 14px;
+      margin-top: 9px;
     }
 
     .hero-download-group {
       width: fit-content;
-      margin-left: auto;
-      margin-top: 16px;
+      flex: 0 0 auto;
+      margin-left: 0;
+      margin-top: 0;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -505,7 +531,7 @@
 
     .hero-download-group .download-label {
       margin-top: 0;
-      margin-left: 18px;
+      margin-left: 8px;
       text-align: left;
     }
 
@@ -516,8 +542,8 @@
     }
 
     .hero .store-btn {
-      width: 180px;
-      min-width: 180px;
+      width: 165px;
+      min-width: 165px;
       height: 56px;
       border-radius: 12px;
       padding: 0;
@@ -581,7 +607,7 @@
       .hero .hero-copy { font-size: 20px; line-height: 1.62; max-width: 900px; }
       .hero .usp-list { gap: 12px; max-width: 580px; }
       .hero .usp-list li { font-size: 16px; }
-      .hero .store-row { margin-top: 22px; }
+      .hero .store-row { margin-top: 9px; }
       .hero-visual { width: min(100%, 1080px); }
     }
 
@@ -619,7 +645,7 @@
       .hero .title-xl { font-size: clamp(52px, 2.9vw, 74px); max-width: 1080px; }
       .hero .hero-copy { font-size: clamp(24px, 1.35vw, 32px); line-height: 1.58; max-width: 1080px; }
       .hero .usp-list { max-width: 700px; }
-      .hero .usp-list li { font-size: 20px; }
+      .hero .usp-list li { font-size: 20px; color: #ffffff; }
       .hero .store-badge-img { height: 44px; }
       .hero-visual { width: min(100%, 1240px); max-width: 1240px; justify-self: start; align-self: start; }
     }
@@ -805,7 +831,7 @@
 
     /* ===== WORKS V2 ===== */
     .works.works-v2 {
-      min-height: 570px;
+      min-height: 500px;
       background:
         radial-gradient(circle at 84% 20%, rgba(94, 191, 125, .18), transparent 30%),
         radial-gradient(circle at 10% 86%, rgba(111, 205, 139, .16), transparent 24%),
@@ -1666,23 +1692,15 @@
       position: relative;
       overflow: hidden;
       display: flex;
-      align-items: flex-start;
-      justify-content: center;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
       padding: clamp(14px, 1.6vw, 24px) clamp(8px, 1vw, 14px) clamp(14px, 1.8vw, 22px);
       box-sizing: border-box;
     }
 
     .reviews-v2-stage::after {
-      content: "";
-      position: absolute;
-      right: -140px;
-      bottom: -170px;
-      width: 620px;
-      height: 320px;
-      border-radius: 50%;
-      border: 26px solid rgba(129, 221, 118, .86);
-      transform: rotate(-16deg);
-      pointer-events: none;
+      content: none;
     }
 
     .reviews-v2-carousel {
@@ -1931,15 +1949,17 @@
     }
 
     .reviews-v2-controls {
-      position: absolute;
-      left: 50%;
-      bottom: 12px;
-      transform: translateX(-50%);
-      z-index: 4;
+      position: relative;
+      left: auto;
+      bottom: auto;
+      transform: none;
+      z-index: 2;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 12px;
+      margin-top: clamp(10px, 1.2vw, 16px);
+      flex-shrink: 0;
     }
 
     .reviews-nav-btn {
@@ -2010,13 +2030,19 @@
     /* ===== FOOTER ===== */
     .footer-v2 {
       background:
-        radial-gradient(circle at 50% 14%, rgba(77, 130, 207, .14), transparent 30%),
-        linear-gradient(180deg, #f2f5fa 0 22%, #121c37 22% 100%);
+        radial-gradient(circle at 50% 10%, rgba(77, 130, 207, .16), transparent 34%),
+        linear-gradient(180deg, #121c37 0%, #0d1831 100%);
       color: #f3f7ff;
       min-height: 420px;
+      overflow: hidden;
     }
 
-    .footer-v2 .content { padding: 0 44px 26px; }
+    .footer-v2 .content {
+      width: min(100%, 1320px);
+      margin: 0 auto;
+      padding: 0px 44px 26px;
+      box-sizing: border-box;
+    }
 
     .footer-contact-strip {
       background: #ffffff;
@@ -2053,6 +2079,7 @@
     .footer-contact-divider { width: 2px; height: 70px; background: rgba(25, 37, 53, .45); margin: 0 26px; }
 
     .footer-main { margin-top: 38px; display: grid; grid-template-columns: 1.25fr .9fr 1.15fr; gap: 28px; align-items: start; }
+    .footer-col { min-width: 0; }
 
     .footer-title { margin: 0; font-size: clamp(24px, 3.5vw, 42px); font-weight: 800; color: #f6f9ff; text-transform: uppercase; }
     .footer-logo-img { display: block; width: clamp(190px, 24vw, 360px); height: auto; filter: drop-shadow(0 4px 10px rgba(7, 15, 30, .24)); }
@@ -2091,6 +2118,11 @@
     .footer-form button:focus-visible { outline: 2px solid #fff; outline-offset: -2px; }
 
     .footer-bottom { margin-top: 18px; border-top: 1px solid rgba(255,255,255,.26); padding-top: 12px; text-align: center; color: rgba(229, 236, 248, .92); font-size: clamp(12px, 1.2vw, 15px); font-weight: 500; }
+    .footer-bottom p {
+      margin: 0;
+      overflow-wrap: anywhere;
+      line-height: 1.5;
+    }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 1180px) {
@@ -2103,6 +2135,7 @@
         width: clamp(160px, 24vw, 230px);
         max-height: clamp(62px, 9vw, 92px);
       }
+      .sticky-topbar .brand-tagline { font-size: 10px; }
       .sticky-topbar .links { display: none; }
       .hamburger { display: flex; }
 
@@ -2146,6 +2179,7 @@
         max-height: clamp(72px, 12vw, 110px);
         transition: transform .6s ease, filter .3s ease;
       }
+      .sticky-topbar .brand-tagline { font-size: 10px; }
       .page { width: calc(100% - 20px); margin: 16px auto; gap: 14px; }
       .content { padding: 24px 22px; }
       .hero .content { padding: 32px 26px 200px; }
@@ -2169,7 +2203,7 @@
       .categories-grid { grid-template-columns: repeat(2, 1fr); }
       .faq-grid { grid-template-columns: 1fr; }
       .insights-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .footer-v2 .content { padding: 0 22px 22px; }
+      .footer-v2 .content { padding: 0px 22px 22px; }
       .footer-contact-strip { grid-template-columns: 1fr; gap: 14px; padding: 18px 20px; }
       .footer-contact-divider { width: 100%; height: 1px; margin: 0; }
       .footer-main { grid-template-columns: 1fr; gap: 20px; }
@@ -2187,13 +2221,23 @@
         max-height: clamp(66px, 15vw, 96px);
         transition: transform .6s ease, filter .3s ease;
       }
+      .sticky-topbar .brand-tagline { font-size: 9px; }
       .sticky-topbar .links { display: none; }
       .hamburger { display: flex; }
       .page { width: calc(100% - 16px); margin: 12px auto; gap: 12px; }
       .content { padding: 20px 16px; }
       .hero .content { padding: 28px 20px 30px; }
+      .hero-benefits-row {
+        margin-top: 14px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .hero .usp-list {
+        flex: 1 1 auto;
+      }
       .hero-visual { margin: 10px auto 16px; width: min(92%, 400px); }
-      .hero .store-btn { min-width: 160px; height: 48px; }
+      .hero .store-btn { min-width: 150px; width: 150px; height: 48px; }
       .why .content { padding: 0; text-align: left; }
       .why-visual { width: min(90%, 350px); }
       .why-grid { padding: 0 0 16px; }
@@ -2229,7 +2273,7 @@
       .reviews-marquee-wrap { width: 100%; }
       .testimonial-media { height: 200px !important; }
       .testimonial-quote { height: auto !important; min-height: auto !important; padding: 18px 16px 14px; }
-      .footer-v2 .content { padding: 0 14px 18px; }
+      .footer-v2 .content { padding: 0px 14px 18px; }
       .footer-contact-strip { margin-top: 20px; padding: 14px; border-radius: 14px; }
       .footer-icon { width: 44px; height: 44px; font-size: 18px; flex: 0 0 44px; }
       .footer-main { margin-top: 24px; }
@@ -2244,11 +2288,16 @@
         width: clamp(112px, 44vw, 160px);
         max-height: clamp(46px, 15vw, 62px);
       }
+      .sticky-topbar .brand-tagline {
+        font-size: 8px;
+        white-space: normal;
+        line-height: 1.15;
+      }
       .page { width: calc(100% - 12px); margin: 8px auto; gap: 10px; }
       .content { padding: 16px 12px; }
       .hero .content { padding: 22px 14px 24px; }
       .hero .store-row { flex-direction: column; align-items: center; }
-      .hero .store-btn { width: 180px; justify-content: center; }
+      .hero .store-btn { width: 165px; min-width: 165px; justify-content: center; }
       .hero .badge-row { flex-direction: column; align-items: stretch; }
       .hero .metric-pill { width: 100%; }
       .hero-visual { width: 95%; }
@@ -2296,24 +2345,24 @@
     /* Reviews tuning for small laptops/tablets */
     @media (max-width: 1180px) and (min-width: 901px) {
       .reviews-v2-bottom { width: 100%; padding: 14px 10px 26px; }
-      .reviews-v2-stage { min-height: auto; padding: 18px 10px 58px; }
+      .reviews-v2-stage { min-height: auto; padding: 18px 10px 18px; }
       .reviews-v2-carousel { width: 100%; }
       .reviews-v2-track { height: auto; }
       .review-slide { grid-template-columns: 1fr 1fr; gap: 14px; height: auto; }
       .review-slide .testimonial-media,
       .review-slide .testimonial-quote { height: 260px !important; min-height: 260px !important; }
-      .reviews-v2-controls { bottom: 12px; }
+      .reviews-v2-controls { bottom: auto; }
     }
 
     @media (max-width: 900px) {
       .reviews-v2-bottom { width: 100%; padding: 12px 8px 22px; }
-      .reviews-v2-stage { min-height: auto; padding: 16px 8px 54px; }
+      .reviews-v2-stage { min-height: auto; padding: 16px 8px 16px; }
       .reviews-v2-carousel { width: 100%; }
       .reviews-v2-track { height: auto; }
       .review-slide { grid-template-columns: 1fr; gap: 12px; height: auto; }
       .review-slide .testimonial-media { height: 220px !important; min-height: 220px !important; }
       .review-slide .testimonial-quote { height: auto !important; min-height: auto !important; }
-      .reviews-v2-controls { bottom: 10px; }
+      .reviews-v2-controls { bottom: auto; }
     }
 
     /* Large/very large screens: make reviews video + comment cards bigger and equal */
