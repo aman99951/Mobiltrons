@@ -129,6 +129,7 @@
           + '<video class="testimonial-video" width="480" height="260" controls preload="none" playsinline>'
           + '<source data-src="' + item.video + '" type="video/mp4" />'
           + '</video>'
+          + '<button type="button" class="testimonial-play-btn" aria-label="Play testimonial video">&#9658;</button>'
           + '<div class="testimonial-tag">' + item.person + '</div>'
           + '</article>'
           + '<article class="testimonial-quote lp-story-card" aria-label="Written testimonial">'
@@ -141,6 +142,32 @@
 
       var slides = [testimonials[testimonials.length - 1]].concat(testimonials, [testimonials[0]]);
       track.innerHTML = slides.map(slideHtml).join('');
+
+      function setupVideoPlayButtons() {
+        var mediaCards = track.querySelectorAll('.testimonial-media');
+        mediaCards.forEach(function (card) {
+          var video = card.querySelector('.testimonial-video');
+          var playBtn = card.querySelector('.testimonial-play-btn');
+          if (!video || !playBtn) return;
+
+          function syncState() {
+            var isPlaying = !video.paused && !video.ended;
+            card.classList.toggle('is-playing', isPlaying);
+          }
+
+          playBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            video.play().catch(function () {});
+          });
+
+          video.addEventListener('play', syncState);
+          video.addEventListener('pause', syncState);
+          video.addEventListener('ended', syncState);
+          syncState();
+        });
+      }
+      setupVideoPlayButtons();
 
       var index = 1;
       var locked = false;
