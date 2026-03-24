@@ -145,8 +145,7 @@
       height: auto;
       max-height: clamp(86px, 9vw, 140px);
       object-fit: contain;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,.34));
-      animation: logo-float 5s ease-in-out infinite alternate;
+     animation: logo-float 5s ease-in-out infinite alternate;
       transition: transform .6s ease, filter .3s ease;
       will-change: transform;
       pointer-events: auto;
@@ -326,7 +325,7 @@
     /* ===== STORE BUTTONS ===== */
     .store-row {
       display: flex;
-      gap: 14px;
+      gap: 0px;
       align-items: center;
       flex-wrap: wrap;
       margin-top: 28px;
@@ -334,7 +333,9 @@
 
     .store-btn {
       padding: 0;
-      min-width: 0;
+      min-width: 180px;
+      width: 180px;
+      height: 56px;
       border-radius: 10px;
       background: transparent;
       display: inline-flex;
@@ -347,9 +348,9 @@
 
     .store-btn:hover,
     .store-btn:focus {
-      opacity: .9;
-      outline: 2px solid var(--green);
-      outline-offset: 2px;
+      opacity: 1;
+      outline: none;
+      box-shadow: none;
     }
 
     .store-badge-img {
@@ -358,6 +359,11 @@
       height: 44px;
       object-fit: contain;
     }
+
+    /* Google Play official PNG includes more transparent padding than Apple SVG.
+       Slightly taller render keeps both visible black badges equal in height. */
+    .store-badge-apple { height: 44px !important; }
+    .store-badge-play { height: 44px !important; }
 
     /* ===== METRIC PILLS ===== */
     .metric-pill {
@@ -484,15 +490,40 @@
       text-transform: uppercase;
     }
 
-    .hero .store-row { margin-top: 14px; }
+    .hero .store-row {
+      margin-top: 14px;
+    }
+
+    .hero-download-group {
+      width: fit-content;
+      margin-left: auto;
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .hero-download-group .download-label {
+      margin-top: 0;
+      margin-left: 18px;
+      text-align: left;
+    }
+
+    .hero-download-group .store-row {
+      margin-top: 14px;
+      margin-left: 0;
+      justify-content: flex-start;
+    }
 
     .hero .store-btn {
-      height: auto;
-      min-width: 0;
+      width: 180px;
+      min-width: 180px;
+      height: 56px;
       border-radius: 12px;
       padding: 0;
     }
     .hero .badge-row { margin-top: 18px; gap: 12px; display: flex; flex-wrap: wrap; }
+
 
     .hero-visual {
       position: relative;
@@ -562,7 +593,7 @@
       .hero .usp-list { gap: 16px; max-width: 720px; }
       .hero .usp-list li { font-size: 18px; }
       .hero .download-label { font-size: 22px; }
-      .hero .store-badge-img { height: 54px; }
+      .hero .store-badge-img { height: 44px; }
       .hero-visual { width: min(100%, 920px); }
     }
 
@@ -589,7 +620,7 @@
       .hero .hero-copy { font-size: clamp(24px, 1.35vw, 32px); line-height: 1.58; max-width: 1080px; }
       .hero .usp-list { max-width: 700px; }
       .hero .usp-list li { font-size: 20px; }
-      .hero .store-badge-img { height: 50px; }
+      .hero .store-badge-img { height: 44px; }
       .hero-visual { width: min(100%, 1240px); max-width: 1240px; justify-self: start; align-self: start; }
     }
 
@@ -774,7 +805,7 @@
 
     /* ===== WORKS V2 ===== */
     .works.works-v2 {
-      min-height: 680px;
+      min-height: 570px;
       background:
         radial-gradient(circle at 84% 20%, rgba(94, 191, 125, .18), transparent 30%),
         radial-gradient(circle at 10% 86%, rgba(111, 205, 139, .16), transparent 24%),
@@ -1063,7 +1094,7 @@
     }
 
     .stats-v2 .store-row { margin-top: 14px; justify-content: center; gap: 12px; }
-    .stats-v2 .store-badge-img { height: 40px; }
+    .stats-v2 .store-badge-img { height: 44px; }
 
     .stats-v2 .wave { width: 980px; height: 320px; left: -120px; bottom: -210px; border: 20px solid rgba(173, 232, 194, 0.42); transform: rotate(-7deg); }
     .stats-v2 .wave-2 { width: 920px; height: 280px; left: -86px; bottom: -216px; border: 14px solid rgba(109, 193, 132, 0.42); transform: rotate(-7deg); }
@@ -1158,11 +1189,30 @@
     }
 
     .about-sub-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
       color: #16253a;
       font-size: clamp(21px, 2.2vw, 30px);
       font-weight: 800;
       letter-spacing: -0.03em;
       line-height: 1.2;
+    }
+
+    .about-bulb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      color: #fff9d8;
+      font-size: 13px;
+      display: inline-grid;
+      place-items: center;
+      background: radial-gradient(circle at 35% 28%, #ffe98a 0%, #ffc93d 46%, #ff9f1a 100%);
+      box-shadow:
+        0 0 0 5px rgba(255, 201, 61, .18),
+        0 0 16px rgba(255, 193, 31, .42),
+        0 8px 14px rgba(201, 131, 11, .22);
+      flex: 0 0 auto;
     }
 
     .about-card p {
@@ -1608,7 +1658,7 @@
     .reviews-v2-stage {
       margin-top: 12px;
       width: 100%;
-      min-height: clamp(330px, 30vw, 520px);
+      min-height: clamp(330px, 30vw, 500px);
       border-radius: 18px;
       background:
         repeating-linear-gradient(90deg, rgba(17, 51, 82, .22) 0 18px, transparent 18px 52px),
@@ -2198,13 +2248,13 @@
       .content { padding: 16px 12px; }
       .hero .content { padding: 22px 14px 24px; }
       .hero .store-row { flex-direction: column; align-items: center; }
-      .hero .store-btn { min-width: auto; width: auto; justify-content: center; }
+      .hero .store-btn { width: 180px; justify-content: center; }
       .hero .badge-row { flex-direction: column; align-items: stretch; }
       .hero .metric-pill { width: 100%; }
       .hero-visual { width: 95%; }
       .store-row { flex-direction: column; align-items: center; }
-      .store-btn { width: auto; justify-content: center; min-width: auto; }
-      .store-badge-img { height: 40px; }
+      .store-btn { width: 180px; justify-content: center; min-width: 180px; }
+      .store-badge-img { height: 44px; }
       .stats-grid { grid-template-columns: 1fr; }
       .stat-box { flex-direction: column; text-align: left; padding: 14px 16px; gap: 8px; justify-content: flex-start; }
       .insight-thumb { height: 100px; }
@@ -2286,7 +2336,7 @@
 
     @media (min-width: 2560px) {
       .reviews-v2-bottom { width: min(100%, 1520px); }
-      .reviews-v2-stage { min-height: clamp(340px, 18vw, 500px); padding: 14px 12px 18px; }
+      .reviews-v2-stage { min-height: clamp(340px, 21vw, 500px); padding: 14px 12px 18px; }
       .reviews-v2-carousel { width: 100%; }
       .review-slide { gap: 24px; }
       .testimonial-media,

@@ -117,7 +117,7 @@
           videoClass: 'portrait-focus'
         },
         {
-          person: 'Local Customer',
+          person: 'Customer',
           title: 'Fresh homemade products nearby.',
           body: "I was looking for fresh, homemade dosa dough. I found a lady selling it just a few streets away on Mobitrons. I was able to call her through the app to confirm, and the flour was so fresh. It's great to support local people.",
           video: './assets/Food_Customer_2 1.mp4',
