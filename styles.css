@@ -129,12 +129,18 @@
       box-shadow: 0 2px 8px rgba(6, 17, 32, .22);
     }
 
-    .sticky-topbar .brand {
+    .sticky-topbar .brand-wrap {
       display: inline-flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 2px;
+    }
+
+    .sticky-topbar .brand {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       color: #111;
       font-size: 22px;
       font-weight: 700;
@@ -171,6 +177,8 @@
       color: #223043;
       white-space: nowrap;
       text-align: center;
+      -webkit-user-select: text;
+      user-select: text;
     }
 
     @media (prefers-reduced-motion: reduce) {
