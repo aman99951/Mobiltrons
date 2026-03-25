@@ -469,15 +469,15 @@
       }
 
       function sanitizeRichHtml(inputHtml) {
+        var scrubbedInput = String(inputHtml || '').replace(/https?:\/\/[^\s<"]+/gi, '');
         var parser = new DOMParser();
-        var doc = parser.parseFromString(String(inputHtml || ''), 'text/html');
+        var doc = parser.parseFromString(scrubbedInput, 'text/html');
         var allowedTags = {
           P: true, H2: true, H3: true, H4: true, UL: true, OL: true, LI: true, STRONG: true,
-          EM: true, A: true, IMG: true, VIDEO: true, SOURCE: true, FIGURE: true, FIGCAPTION: true,
+          EM: true, IMG: true, VIDEO: true, SOURCE: true, FIGURE: true, FIGCAPTION: true,
           BLOCKQUOTE: true, BR: true
         };
         var allowedAttrs = {
-          A: { href: true, target: true, rel: true },
           IMG: { src: true, alt: true, loading: true },
           VIDEO: { controls: true, preload: true, playsinline: true, poster: true, muted: true, loop: true },
           SOURCE: { src: true, type: true }
@@ -504,16 +504,45 @@
               }
             });
 
-            if (child.tagName === 'A') {
-              child.setAttribute('target', '_blank');
-              child.setAttribute('rel', 'noopener noreferrer');
-            }
             clean(child);
           });
         }
 
         clean(doc.body);
         return doc.body.innerHTML;
+      }
+
+      function hideElement(el) {
+        if (!el) return;
+        var figure = el.closest('figure');
+        if (figure) {
+          figure.remove();
+          return;
+        }
+        el.remove();
+      }
+
+      function validateModalMedia() {
+        var images = modalBody.querySelectorAll('img');
+        images.forEach(function (img) {
+          var src = (img.getAttribute('src') || '').trim();
+          if (!src || /^https?:\/\//i.test(src)) {
+            hideElement(img);
+            return;
+          }
+          img.addEventListener('error', function () { hideElement(img); }, { once: true });
+        });
+
+        var videos = modalBody.querySelectorAll('video');
+        videos.forEach(function (video) {
+          var source = video.querySelector('source');
+          var src = source ? (source.getAttribute('src') || '').trim() : '';
+          if (!src || /^https?:\/\//i.test(src)) {
+            hideElement(video);
+            return;
+          }
+          video.addEventListener('error', function () { hideElement(video); }, { once: true });
+        });
       }
 
       function renderArticle(article) {
@@ -530,6 +559,7 @@
           + sanitizeRichHtml(article.html || '')
           + '</article>';
         modalBody.innerHTML = html;
+        validateModalMedia();
       }
 
       function renderLoadingState() {
