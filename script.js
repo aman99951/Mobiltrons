@@ -447,3 +447,214 @@
         heroObserver.observe(heroSection);
       }
     })();
+
+    // Newsletter read-more modal with OpenAI-generated content only.
+    (function () {
+      var modal = document.getElementById('newsletterModal');
+      var modalBody = document.getElementById('newsletterModalBody');
+      if (!modal || !modalBody) return;
+
+      var articleStore = {};
+      var loadingById = {};
+
+      var focusReturnEl = null;
+
+      function escapeHtml(value) {
+        return String(value || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function sanitizeRichHtml(inputHtml) {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(String(inputHtml || ''), 'text/html');
+        var allowedTags = {
+          P: true, H2: true, H3: true, H4: true, UL: true, OL: true, LI: true, STRONG: true,
+          EM: true, A: true, IMG: true, VIDEO: true, SOURCE: true, FIGURE: true, FIGCAPTION: true,
+          BLOCKQUOTE: true, BR: true
+        };
+        var allowedAttrs = {
+          A: { href: true, target: true, rel: true },
+          IMG: { src: true, alt: true, loading: true },
+          VIDEO: { controls: true, preload: true, playsinline: true, poster: true, muted: true, loop: true },
+          SOURCE: { src: true, type: true }
+        };
+
+        function clean(node) {
+          var children = Array.prototype.slice.call(node.children);
+          children.forEach(function (child) {
+            if (!allowedTags[child.tagName]) {
+              child.replaceWith.apply(child, Array.prototype.slice.call(child.childNodes));
+              return;
+            }
+
+            Array.prototype.slice.call(child.attributes).forEach(function (attr) {
+              var tagRules = allowedAttrs[child.tagName] || {};
+              var attrName = attr.name.toLowerCase();
+              var attrValue = attr.value || '';
+              if (!tagRules[attrName]) {
+                child.removeAttribute(attr.name);
+                return;
+              }
+              if ((attrName === 'href' || attrName === 'src') && /^\s*javascript:/i.test(attrValue)) {
+                child.removeAttribute(attr.name);
+              }
+            });
+
+            if (child.tagName === 'A') {
+              child.setAttribute('target', '_blank');
+              child.setAttribute('rel', 'noopener noreferrer');
+            }
+            clean(child);
+          });
+        }
+
+        clean(doc.body);
+        return doc.body.innerHTML;
+      }
+
+      function renderArticle(article) {
+        if (!article) return;
+        var html = ''
+          + '<article class="newsletter-article">'
+          + '<div class="newsletter-article__meta">'
+          + '<span class="newsletter-article__pill">' + escapeHtml(article.category || 'Newsletter') + '</span>'
+          + '<span>' + escapeHtml(article.date || '') + '</span>'
+          + '<span>&bull;</span>'
+          + '<span>' + escapeHtml(article.readingTime || '4 min read') + '</span>'
+          + '</div>'
+          + '<h2 id="newsletterModalTitle">' + escapeHtml(article.title || 'Newsletter') + '</h2>'
+          + sanitizeRichHtml(article.html || '')
+          + '</article>';
+        modalBody.innerHTML = html;
+      }
+
+      function renderLoadingState() {
+        modalBody.innerHTML = ''
+          + '<article class="newsletter-article">'
+          + '<h2 id="newsletterModalTitle">Generating article...</h2>'
+          + '<p>Please wait while we fetch fresh content from OpenAI.</p>'
+          + '</article>';
+      }
+
+      function renderErrorState(articleId) {
+        modalBody.innerHTML = ''
+          + '<article class="newsletter-article">'
+          + '<h2 id="newsletterModalTitle">Unable to load article</h2>'
+          + '<p>OpenAI content is required for this popup and the generation request failed.</p>'
+          + '<p><a href="#" data-newsletter-retry="' + escapeHtml(articleId) + '">Retry generation</a></p>'
+          + '</article>';
+      }
+
+      function showModal(sourceEl) {
+        focusReturnEl = sourceEl || document.activeElement;
+        if (!modal.classList.contains('is-open')) modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        var closeBtn = modal.querySelector('.newsletter-modal__close');
+        if (closeBtn) closeBtn.focus();
+      }
+
+      function closeModal() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if (focusReturnEl && typeof focusReturnEl.focus === 'function') focusReturnEl.focus();
+      }
+
+      function fetchGeneratedArticles(payload) {
+        return fetch('/api/newsletters/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload || {})
+        }).then(function (response) {
+          if (!response.ok) throw new Error('API request failed');
+          return response.json();
+        }).then(function (body) {
+          if (!body || !Array.isArray(body.articles)) throw new Error('Invalid response');
+          return body.articles;
+        });
+      }
+
+      function hydrateCardPreview(articleId, article) {
+        var opener = document.querySelector('[data-newsletter-open="' + articleId + '"]');
+        if (!opener || !article) return;
+        var card = opener.closest('.insight-card');
+        if (!card) return;
+        var titleLink = card.querySelector('.insight-body h3 a');
+        var desc = card.querySelector('.insight-body p');
+        if (titleLink && article.title) titleLink.textContent = article.title;
+        if (desc && article.teaser) desc.textContent = article.teaser;
+      }
+
+      function loadAndRenderArticle(articleId) {
+        if (!articleId) return;
+        if (articleStore[articleId]) {
+          renderArticle(articleStore[articleId]);
+          return;
+        }
+
+        if (loadingById[articleId]) return;
+        loadingById[articleId] = true;
+        renderLoadingState();
+
+        fetchGeneratedArticles({ count: 1, ids: [articleId] })
+          .then(function (articles) {
+            var article = articles.find(function (entry) { return entry && entry.id === articleId; }) || articles[0];
+            if (!article || !article.id) throw new Error('No article generated');
+            articleStore[article.id] = article;
+            hydrateCardPreview(article.id, article);
+            renderArticle(articleStore[article.id]);
+          })
+          .catch(function () {
+            renderErrorState(articleId);
+          })
+          .finally(function () {
+            loadingById[articleId] = false;
+          });
+      }
+
+      document.addEventListener('click', function (event) {
+        var closeEl = event.target.closest('[data-newsletter-close]');
+        if (closeEl) {
+          event.preventDefault();
+          closeModal();
+          return;
+        }
+
+        var retryEl = event.target.closest('[data-newsletter-retry]');
+        if (retryEl) {
+          event.preventDefault();
+          loadAndRenderArticle(retryEl.getAttribute('data-newsletter-retry'));
+          return;
+        }
+
+        var openEl = event.target.closest('[data-newsletter-open]');
+        if (!openEl) return;
+        event.preventDefault();
+        var articleId = openEl.getAttribute('data-newsletter-open');
+        showModal(openEl);
+        loadAndRenderArticle(articleId);
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && modal.classList.contains('is-open')) {
+          closeModal();
+        }
+      });
+
+      fetchGeneratedArticles({ count: 3, ids: ['trusted-providers', 'local-vs-traditional', 'selling-on-mobitrons'] })
+        .then(function (articles) {
+          articles.forEach(function (article) {
+            if (!article || !article.id) return;
+            articleStore[article.id] = article;
+            hydrateCardPreview(article.id, article);
+          });
+        })
+        .catch(function () {
+          // No fallback data: cards stay as-is until API is available.
+        });
+    })();
