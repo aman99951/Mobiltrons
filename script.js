@@ -566,7 +566,7 @@
         modalBody.innerHTML = ''
           + '<article class="newsletter-article">'
           + '<h2 id="newsletterModalTitle">Generating article...</h2>'
-          + '<p>Please wait while we fetch fresh content from OpenAI.</p>'
+          + '<p>Loading...</p>'
           + '</article>';
       }
 
